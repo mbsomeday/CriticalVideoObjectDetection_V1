@@ -1,4 +1,4 @@
-"""CAM_FRONT pedestrians within 30m and visibility_token <= 3.
+"""CAM_FRONT pedestrians
 
 2D boxes are read from nuScenes' official image_annotations.json export.
 TTC is evaluated from the third keyframe (frame_idx >= 2).
@@ -49,7 +49,7 @@ def reachset_cv(state, *, horizon_s, dt_s, velocity_error_mps,
     }
 
 
-def predict_ego_reachset(state, *, horizon_s=3.0, dt_s=0.1,
+def predict_ego_reachset(state, *, horizon_s=5.0, dt_s=0.1,
                          velocity_error_mps=0.3, accel_bound_mps2=1.0,
                          unknown_speed_bound_mps=15.0):
     return reachset_cv(
@@ -60,7 +60,7 @@ def predict_ego_reachset(state, *, horizon_s=3.0, dt_s=0.1,
     )
 
 
-def predict_pedestrian_reachset(state, *, horizon_s=3.0, dt_s=0.1,
+def predict_pedestrian_reachset(state, *, horizon_s=5.0, dt_s=0.1,
                                 velocity_error_mps=0.2, accel_bound_mps2=0.7,
                                 unknown_speed_bound_mps=3.0):
     return reachset_cv(
@@ -103,25 +103,24 @@ def load_image_annotations(json_path):
 
 # ---------- Main analysis ----------
 
-def analyze_scene(nusc, my_scene, *, horizon_s=3.0, dt_s=0.1,
+def analyze_scene(nusc, my_scene, *, horizon_s=5.0, dt_s=0.1,
                   history_s=1.0, ego_length_m=4.7, ego_width_m=2.0,
                   ego_reachset_fn=predict_ego_reachset,
                   ped_reachset_fn=predict_pedestrian_reachset,
                   egovehicle_velocity=None, image_ann_by_sd=None,
-                  ttc_start_frame=2, max_distance_m=30.0,
+                  ttc_start_frame=2,
                   max_visibility_token=3):
     """Return qualified pedestrian records and optional per-frame ego velocities.
 
     ttc_start_frame=2 means the third keyframe when indexing from zero.
-    The 30m boundary is inclusive; visibility_token is compared numerically.
+    No distance cutoff is applied; visibility_token is compared numerically.
     Frames before ttc_start_frame are saved with ttc_s=None (not evaluated).
+    TTC can now be detected up to 5 s ahead with the default reachset horizon.
     """
     if image_ann_by_sd is None:
         raise ValueError("Pass image_ann_by_sd=load_image_annotations(json_path)")
     if ttc_start_frame < 0:
         raise ValueError("ttc_start_frame must be nonnegative")
-    if max_distance_m <= 0:
-        raise ValueError("max_distance_m must be positive")
     if max_visibility_token not in (1, 2, 3, 4):
         raise ValueError("max_visibility_token must be 1, 2, 3, or 4")
     pedestrians = defaultdict(list)
@@ -182,9 +181,6 @@ def analyze_scene(nusc, my_scene, *, horizon_s=3.0, dt_s=0.1,
             ped_xy = np.asarray(ann["translation"][:2], dtype=float)
             distance = float(np.linalg.norm(ped_xy - ego_xy))
 
-            if distance > max_distance_m:  # <= 30 meters
-                continue
-
             pid = ann["instance_token"]
             bbox_2d = [float(x) for x in ann_2d["bbox_corners"]]
             if len(bbox_2d) != 4:
@@ -244,7 +240,7 @@ def build_scene_annotations(my_scene, pedestrians, *, critical_ttc_s=3.0,
                             egovehicle_velocity=None):
     """Produce 0/1/2 labels for all keyframes, plus per-visible-frame data.
 
-    0 = does not meet CAM_FRONT visibility<=3/distance<=30m criteria;
+    0 = does not meet CAM_FRONT visibility<=3 or image-projection criteria;
     1 = meets criteria, TTC absent or >= critical_ttc_s;
     2 = meets criteria, evaluated TTC < critical_ttc_s.
 
@@ -333,20 +329,18 @@ if __name__ == "__main__":
     image_ann_by_sd = load_image_annotations(image_annotations_path)
 
     for my_scene in nusc.scene:
-        # my_scene = nusc.scene[0]
         egovehicle_velocity = []
         pedestrians = analyze_scene(
-            nusc, my_scene, horizon_s=3.0, dt_s=0.1,
+            nusc, my_scene, horizon_s=5.0, dt_s=0.1,
             egovehicle_velocity=egovehicle_velocity,
             image_ann_by_sd=image_ann_by_sd,
             ttc_start_frame=2,       # 第3帧：frame_idx 2
-            max_distance_m=30.0,    # <= 30 m
             max_visibility_token=3, # <= 3
         )
         output_path = save_scene_json(
             my_scene, pedestrians,
-            output_dir="../temp/results_10",
-            critical_ttc_s=3.0,
+            output_dir="./nu_scene_anno",
+            critical_ttc_s=3.0,  # Retain original critical-frame threshold
             egovehicle_velocity=egovehicle_velocity,
         )
         print(f"Saved: {output_path}")
