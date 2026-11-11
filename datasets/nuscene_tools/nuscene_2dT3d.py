@@ -9,6 +9,8 @@ Note: Projecting tight 3d boxes to 2d generally leads to non-tight boxes.
       Furthermore it is non-trivial to determine whether a box falls into the image, rather than behind or around it.
       Finally some of the objects may be occluded by other objects, in particular when the lidar can see them, but the
       cameras cannot.
+
+解码文件保存到v1.0-mini文件夹下，与其他json文件放在一起。
 """
 
 import argparse
