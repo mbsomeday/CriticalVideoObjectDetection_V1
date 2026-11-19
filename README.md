@@ -2,7 +2,9 @@
 # Safety-Oriented Evaluation of Pedestrian Detection in Autonomous Driving
 
 
-## 1. Overview
+<details open>
+<summary><strong>1. Overview</strong></summary>
+
 
 ### Aim
 
@@ -16,7 +18,12 @@ Reduce safety violations caused by image-based 2D object detection in autonomous
 To investigate these problems, the project compares individual object detectors and ensemble methods using conventional vision metrics and safety-related metrics, across real-world driving data and simulation scenarios.
 
 
-## 2. Experimental Design
+
+</details>
+
+<details open>
+<summary><strong> 2. Experimental Design</strong></summary>
+
 
 
 ### 2.1 Datasets
@@ -37,23 +44,24 @@ To investigate these problems, the project compares individual object detectors 
 
 The evaluated methods are organized into two categories.
 
-#### Type 1: Individual Model Improvement
+#### Type 1: Individual Model
 
-Methods designed to improve the detection performance of individual models.
 
-Examples:
-- Baseline object detectors
-- Model fine-tuning
-- Other individual model enhancement methods
 
 #### Type 2: Ensemble Methods
 
-Methods that combine multiple detection models to improve detection performance and reliability.
 
-Examples:
-- Voting-based ensembles
-- Confidence-based fusion
-- Adaptive ensemble methods
+
+[//]: # (Methods that combine multiple detection models to improve detection performance and reliability.)
+
+[//]: # ()
+[//]: # (Examples:)
+
+[//]: # (- Voting-based ensembles)
+
+[//]: # (- Confidence-based fusion)
+
+[//]: # (- Adaptive ensemble methods)
 
 ### 2.3 Evaluation Metrics
 
@@ -77,27 +85,20 @@ Since the current detection task contains only the pedestrian class, multi-class
 
 A consecutive-five-frame missed-detection rule appears in the related-work discussion but is **not an active requirement** in the current study.
 
-### 2.4 Distance-Based Pedestrian Annotation
 
-Safety relevance is currently determined using the pedestrian's distance in front of the ego vehicle and vehicle-speed-dependent braking boundaries (Section 3.1). The current zone labels are **distance-based**, rather than being assigned using a fixed TTC threshold.
 
-Each pedestrian instance is assigned one of four frame-level labels:
 
-| Label | Zone / State | Meaning |
-|-------|--------------|---------|
-| **0** | Absent | The pedestrian does not appear in the frame. |
-| **1** | Safe zone | The pedestrian appears but is not relevant to the current safety evaluation. |
-| **2** | Warning zone | A relevant pedestrian who is not yet in the danger zone. |
-| **3** | Danger zone | A pedestrian in the safety-critical distance range. |
+</details>
 
-Types 2 and 3 are the principal subjects of the safety-oriented evaluation. An overall detection evaluation can still include Type 1 pedestrians and should clearly state its evaluation population.
+<details open>
+<summary><strong>3. Safety Requirements</strong></summary>
 
-## 3. Safety Requirements
+
 
 
 ### 3.1 Distance-Based Danger, Warning, and Safe Zones
 
-The region ahead of the ego vehicle is divided into three zones according to stopping-distance-based boundaries.
+
 
 Let:
 
@@ -126,6 +127,21 @@ All formulas require `v` in m/s; convert from km/h by dividing by 3.6. These dis
 | **Danger — braking still possible** | `d_brake < d ≤ d_danger` | Up to approximately 2 s of extra distance at the current speed beyond the braking distance is available for warning/intervention. |
 | **Warning** | `d_danger < d ≤ d_warning` | The pedestrian is relevant; detection should occur before the danger zone is reached. |
 | **Safe** | `d > d_warning` | The pedestrian is outside the current safety-relevant distance range. |
+
+The region ahead of the ego vehicle is divided into three zones according to stopping-distance-based boundaries.
+
+[//]: # (Safety relevance is currently determined using the pedestrian's distance in front of the ego vehicle and vehicle-speed-dependent braking boundaries &#40;Section 3.1&#41;. The current zone labels are **distance-based**, rather than being assigned using a fixed TTC threshold.)
+
+Each pedestrian instance is assigned one of four frame-level labels:
+
+| Label | Zone / State | Meaning |
+|-------|--------------|---------|
+| **0** | Absent | The pedestrian does not appear in the frame. |
+| **1** | Safe zone | The pedestrian appears but is not relevant to the current safety evaluation. |
+| **2** | Warning zone | A relevant pedestrian who is not yet in the danger zone. |
+| **3** | Danger zone | A pedestrian in the safety-critical distance range. |
+
+Types 2 and 3 are the principal subjects of the safety-oriented evaluation. An overall detection evaluation can still include Type 1 pedestrians and should clearly state its evaluation population.
 
 **Distance boundaries by ego-vehicle speed:**
 
@@ -214,7 +230,12 @@ The boundary table assumes constant ego speed before braking and constant maximu
 [//]: # (   - Investigate temporal patterns of detection failures.)
 
 
-## 4. Experimental Results
+
+</details>
+
+<details open>
+<summary><strong>4. Experimental Results</strong></summary>
+
 
 Preliminary experiments were conducted on the nuScenes-mini dataset and the CARLA simulation platform using three pretrained object detection models: Mask R-CNN, Cascade Mask R-CNN, and HTC.
 
@@ -243,7 +264,12 @@ The models were evaluated using AP@0.5, with results reported separately for all
 
 
 
-## 6. Research Directions
+
+</details>
+
+<details open>
+<summary><strong>6. Research Directions</strong></summary>
+
 
 ### Direction 2: Factors Associated with Safety-Related Detection Failures
 
@@ -255,7 +281,12 @@ Design ensemble models that explicitly target the identified failure factors and
 
 
 
-## 7. Status
+
+</details>
+
+<details open>
+<summary><strong>7. Status</strong></summary>
+
 
 **Current state:** Preliminary evaluation criteria and scenarios have been established.
 
@@ -266,3 +297,5 @@ Design ensemble models that explicitly target the identified failure factors and
 
 **Next focus:** Analyze safety-related failure factors and use the findings to guide ensemble design.
 
+
+</details>
