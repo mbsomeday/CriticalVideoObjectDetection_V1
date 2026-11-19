@@ -267,22 +267,24 @@ The models were evaluated using AP@0.5, with results reported separately for all
 
 </details>
 
-<details open>
-<summary><strong>6. Research Directions</strong></summary>
+[//]: # (<details open>)
 
+[//]: # (<summary><strong>6. Research Directions</strong></summary>)
 
-### Direction 2: Factors Associated with Safety-Related Detection Failures
+[//]: # ()
+[//]: # ()
+[//]: # (### Direction 2: Factors Associated with Safety-Related Detection Failures)
 
-Identify factors contributing to pedestrian detection failures that correlate with safety violations, including when and under which conditions the failures occur.
+[//]: # ()
+[//]: # (Identify factors contributing to pedestrian detection failures that correlate with safety violations, including when and under which conditions the failures occur.)
 
-### Direction 3: Safety-Oriented Ensemble Design
+[//]: # ()
+[//]: # (### Direction 3: Safety-Oriented Ensemble Design)
 
-Design ensemble models that explicitly target the identified failure factors and evaluate whether they reduce safety violations.
+[//]: # ()
+[//]: # (Design ensemble models that explicitly target the identified failure factors and evaluate whether they reduce safety violations.)
 
-
-
-
-</details>
+[//]: # (</details>)
 
 <details open>
 <summary><strong>7. Status</strong></summary>
