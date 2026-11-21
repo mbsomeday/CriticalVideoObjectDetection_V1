@@ -203,6 +203,8 @@ def analyze_scene(nusc, my_scene, *, horizon_s=3.0, dt_s=0.1,
         frame_output = {
             "frame_idx": frame_idx,
             "front_cam": cam_sd["filename"],
+            "vehicle_velocity": round(float(np.linalg.norm(ego_v)), 2)
+            if ego_known else None,
             "pedestrians": [],
         }
         for ann, bbox in project_pedestrian_boxes(nusc, sample, cam_token):
@@ -269,7 +271,7 @@ def main():
     parser.add_argument("--version", default="v1.0-mini")
     parser.add_argument("--scene", default="all", help="scene name (e.g. scene-0061) or 'all'")
     parser.add_argument("--output-dir", default="./results_frames")
-    parser.add_argument("--horizon-s", type=float, default=3.0)
+    parser.add_argument("--horizon-s", type=float, default=5.0)
     parser.add_argument("--dt-s", type=float, default=0.1)
     parser.add_argument("--ttc-start-frame", type=int, default=2)
     args = parser.parse_args()
